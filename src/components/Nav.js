@@ -1,13 +1,24 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-import { AiOutlineShoppingCart } from "react-icons/ai";
+import { AiOutlineShoppingCart, AiOutlineUser } from "react-icons/ai";
 import { CgClose, CgMenu } from "react-icons/cg";
 import { useGlobalCartContext } from "../context/cartContext";
+import Button from "../styles/Button";
+import { useAuth0 } from "@auth0/auth0-react";
+import { IoIosArrowDown } from "react-icons/io";
+import { IoLogOutOutline } from "react-icons/io5";
 
 const Nav = () => {
   const [menuIcon, setMenuIcon] = useState(false);
-  const {totalItem}=useGlobalCartContext()
+  const [dropDown, setDropDown] = useState(false);
+  const { totalItem } = useGlobalCartContext();
+
+  const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
+
+  console.log(dropDown);
+  console.log(isAuthenticated);
+  console.log(user);
 
   return (
     <Navbar>
@@ -48,6 +59,44 @@ const Nav = () => {
             >
               CONTACT
             </NavLink>
+          </li>
+          <li>
+            {isAuthenticated ? (
+              <div className="cart-user--profile">
+                <img src={user.picture} alt={user.name} />
+                <h2 className="cart-user--name">{user.name}</h2>
+                <IoIosArrowDown
+                  className="drop-down-arrow"
+                  onClick={() => setDropDown(!dropDown)}
+                />
+
+                {dropDown ? (
+                  <div className="dropDownProfile">
+                    <ul className="dropDown-ul">
+                      <li className="dropDown-logout">
+                        <AiOutlineUser className="dropDown-logo" />{" "}
+                        <span className="dropDown-text">Profile</span>
+                      </li>
+                      <li
+                        onClick={() =>
+                          logout({
+                            logoutParams: { returnTo: window.location.origin },
+                          })
+                        }
+                        className="dropDown-logout"
+                      >
+                        <IoLogOutOutline className="dropDown-logo" />{" "}
+                        <span className="dropDown-text">Logout</span>
+                      </li>
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+            ) : (
+              <li>
+                <Button onClick={() => loginWithRedirect()}>Log In</Button>;
+              </li>
+            )}
           </li>
 
           <li>
@@ -148,6 +197,77 @@ const Navbar = styled.nav`
   .user-login {
     font-size: 1.4rem;
     padding: 0.8rem 1.4rem;
+  }
+
+  /* .user-profile{
+    display: flex;
+    align-items: center;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    padding: 8px;
+  } */
+
+  .cart-user--profile {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1.2rem;
+    position: relative;
+
+    img {
+      width: 4.5rem;
+      height: 4.5rem;
+      border-radius: 50%;
+    }
+    h2 {
+      font-size: 2.4rem;
+    }
+  }
+  .cart-user--name {
+    text-transform: capitalize;
+  }
+
+  .drop-down-arrow {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .dropDownProfile {
+    position: absolute;
+    top: 5rem;
+    right: -0.5rem;
+    width: auto;
+    padding: 2rem;
+    border-radius: 5px;
+    background-color: white;
+    border: 1px solid gray;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+
+    .dropDown-ul {
+      display: grid;
+      row-gap: 2rem;
+    }
+
+    li {
+      font-size: 2rem;
+      font-family: "Work Sans", sans-serif;
+      font-size: 1.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    .dropDown-logo {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    .dropDown-logout {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .dropDown-text{
+      margin-top: 2.5px;
+    }
   }
 
   @media (max-width: ${({ theme }) => theme.media.mobile}) {

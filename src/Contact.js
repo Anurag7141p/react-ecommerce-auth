@@ -1,6 +1,10 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import styled from "styled-components";
 
 const Contact = () => {
+
+  const {user,isAuthenticated}=useAuth0()
+
   return (
     <Wrapper>
       <h2 className="common-heading">Contact Page</h2>
@@ -11,6 +15,7 @@ const Contact = () => {
         style={{ border: "0" }}
         allowFullScreen=""
         loading="lazy"
+        title="#"
         referrerPolicy="no-referrer-when-downgrade"
       ></iframe>
 
@@ -28,6 +33,7 @@ const Contact = () => {
               placeholder="Username"
               required
               autoComplete="off"
+              value={isAuthenticated?user.name:""}
             />
 
             <input
@@ -36,6 +42,8 @@ const Contact = () => {
               placeholder="Email"
               required
               autoComplete="off"
+              value={isAuthenticated?user.email:""}
+            
             />
 
             <textarea

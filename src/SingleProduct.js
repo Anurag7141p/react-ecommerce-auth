@@ -21,10 +21,7 @@ const SingleProduct = () => {
     name,
     company,
     price,
-    colors,
     description,
-    category,
-    shipping,
     stock,
     reviews,
     stars,
@@ -34,7 +31,7 @@ const SingleProduct = () => {
   useEffect(() => {
     const singleApi = `${API}?id=${id}`;
     getSingleProduct(singleApi);
-  }, []);
+  }, [] );
 
 
   if (isSingleLoading === true) {
